@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{course.title}}</h1>
+<p>{{course.description}}</p>
+{% for challenge in course.challenges %}
+<div>
+    {{challenge.title}}
+</div>
+{% endfor %}
+
+{% endblock %}

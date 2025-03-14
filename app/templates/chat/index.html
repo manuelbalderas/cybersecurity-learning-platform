@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold">Chatea con Pwnie</h2>
+    
+    <div id="chat-box" class="border p-4 h-80 overflow-y-auto bg-base-200 rounded">
+        <!-- Messages will be displayed here -->
+    </div>
+
+    <div class="mt-4 flex">
+        <input id="message" type="text" placeholder="Escribe un mensaje..."
+            class="input input-bordered flex-1 mr-2"/>
+        <button onclick="sendMessage()" class="btn btn-primary">Enviar</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+<script>
+    // Connect to WebSocket server
+    var socket = io("http://localhost:5000");
+
+    // When connected
+    socket.on("connect", function() {
+        console.log("Conectado al servidor WebSocket");
+        appendMessage("🟢 Conectado al chat", "system");
+    });
+
+    // Handle incoming messages from the server
+    socket.on("response", function(data) {
+        appendMessage("🤖 Pwnie: " + data, "bot");
+    });
+
+    // Handle disconnection
+    socket.on("disconnect", function() {
+        appendMessage("🔴 Desconectado del chat", "system");
+    });
+
+    // Function to send messages
+    function sendMessage() {
+        var input = document.getElementById("message");
+        var userMessage = input.value.trim();
+        if (userMessage === "") return;
+
+        appendMessage("🧑‍💻 Tú: " + userMessage, "user");
+        
+        socket.send(userMessage); // Send message to the WebSocket server
+        input.value = ""; // Clear input field
+    }
+
+    // Function to append messages to the chat
+    function appendMessage(message, type) {
+        var chatBox = document.getElementById("chat-box");
+        var messageElement = document.createElement("p");
+
+        if (type === "user") {
+            messageElement.className = "text-right text-blue-500";
+        } else if (type === "bot") {
+            messageElement.className = "text-left text-green-500";
+        } else {
+            messageElement.className = "text-center text-gray-500 italic";
+        }
+
+        messageElement.textContent = message;
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+    }
+</script>
+{% endblock %}
