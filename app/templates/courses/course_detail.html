@@ -2,12 +2,39 @@
 
 {% block content %}
 
-<h1>{{course.title}}</h1>
-<p>{{course.description}}</p>
-{% for challenge in course.challenges %}
-<div>
-    {{challenge.title}}
+<div class="flex flex-col mx-24">
+<h1 class="text-3xl font-bold font-RobotoMono py-7 text-center">{{course.title.upper()}}</h1>
+<div class="flex flex-col items-center space-x-4 lg:flex-row-reverse">
+<img src="{{ url_for('static', filename='images/' ~ course.image_url) }}" class="w-full mx-auto">
+<p class="flex-2 text-lg">{{course.description}}</p>
+<img/>
 </div>
-{% endfor %}
+
+<h2 class="text-3xl font-bold font-RobotoMono py-7">CONTENIDO</h2>
+
+<div class="overflow-x-auto">
+    <table class="table table-zebra text-base">
+      <!-- head -->
+      <thead>
+        <tr class="font-RobotoMono text-base">
+          <th>{{ 'Categoria'.upper() }}</th>
+          <th>{{ 'Reto'.upper() }}</th>
+          <th>{{ 'Puntos'.upper() }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- challenges rows -->
+        {% for challenge in course.challenges %}
+        <tr>
+          <td>{{ challenge.category.name }}</td>
+          <td class="hover:text-accent"><a href="/challenges/{{ challenge.alias }}">{{ challenge.category.name }}</a></td>
+          <td>{{ challenge.points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
 
 {% endblock %}

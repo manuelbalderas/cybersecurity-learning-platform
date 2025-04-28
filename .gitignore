@@ -410,4 +410,7 @@ pyrightconfig.json
 pyvenv.cfg
 pip-selfcheck.json
 
+# Databases
+*.db
+
 # End of https://www.toptal.com/developers/gitignore/api/python,flask,node,venv,dotenv

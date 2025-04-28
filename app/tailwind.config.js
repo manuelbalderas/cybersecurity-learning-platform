@@ -2,14 +2,19 @@
 module.exports = {
   content: ["./templates/**"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'Roboto': ['Roboto'],
+        'RobotoMono': ['Roboto Mono']
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/typography'),
     require('daisyui'),
   ],
   daisyui: {
-    themes: ["lofi", "dark", "cupcake", "retro"],
+    themes: ["lofi", "dark", "cupcake", "retro", "dracula"],
   },
 }
 

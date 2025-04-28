@@ -28,7 +28,7 @@
 
     // Handle incoming messages from the server
     socket.on("response", function(data) {
-        appendMessage("🤖 Pwnie: " + data, "bot");
+        appendMessage(data, "bot");
     });
 
     // Handle disconnection
@@ -48,22 +48,46 @@
         input.value = ""; // Clear input field
     }
 
-    // Function to append messages to the chat
     function appendMessage(message, type) {
         var chatBox = document.getElementById("chat-box");
-        var messageElement = document.createElement("p");
+        var chatMessage = document.createElement("div");
 
         if (type === "user") {
-            messageElement.className = "text-right text-blue-500";
+            chatMessage.classList.add("chat", "chat-end");
+            
+            var userBubble = document.createElement("div");
+            userBubble.classList.add("chat-bubble");
+            userBubble.textContent = message;
+
+            chatMessage.appendChild(userBubble);
         } else if (type === "bot") {
-            messageElement.className = "text-left text-green-500";
+            chatMessage.classList.add("chat", "chat-start");
+
+            var chatHeader = document.createElement("div");
+            chatHeader.classList.add("chat-header");
+            chatHeader.textContent = "🤖 Pwnie";
+
+            var botBubble = document.createElement("div");
+            botBubble.classList.add("chat-bubble");
+            botBubble.textContent = message;
+
+            chatMessage.appendChild(chatHeader);
+            chatMessage.appendChild(botBubble);
         } else {
-            messageElement.className = "text-center text-gray-500 italic";
+            chatMessage.classList.add("chat", "chat-center");
+
+            var systemBubble = document.createElement("div");
+            systemBubble.classList.add("chat-bubble", "italic", "text-gray-500");
+            systemBubble.textContent = message;
+
+            chatMessage.appendChild(systemBubble);
         }
 
-        messageElement.textContent = message;
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+        chatBox.appendChild(chatMessage);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
+
+
 </script>
 {% endblock %}

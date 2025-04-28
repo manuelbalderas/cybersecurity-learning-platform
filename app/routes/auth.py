@@ -24,7 +24,7 @@ def login():
         else:
             flash("Inicio de sesión erroneo")
     
-    return render_template('auth/login.html', form = form)
+    return render_template('auth/login.html', form = form, page_title="Iniciar Sesión")
 
 @auth.route('/logout', methods=['POST'])
 @login_required
@@ -53,4 +53,5 @@ def signup():
         
     return render_template('auth/register.html',
     our_users = our_users,
-    form = form)
+    form = form,
+    page_title="Registro")
