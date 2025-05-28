@@ -11,3 +11,18 @@
         src: url(../fonts/Roboto-VariableFont_wdth\,wght.ttf);
     }
 }
+@keyframes fadeOut {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+  
+  .animate-fade-out {
+    animation: fadeOut 10s ease-out forwards; /* Duration and easing */
+  }
+  

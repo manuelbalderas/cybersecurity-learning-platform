@@ -10,7 +10,9 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow) 
-
+    
+    completed_challenges = db.relationship('UserChallenge', back_populates='user')
+    
     def __repr__(self):
         return '<Username %r>' % self.username
 
@@ -50,3 +52,16 @@ class Challenge(db.Model):
 
     course = db.relationship('Course', back_populates='challenges')
     category = db.relationship('Category', back_populates='challenges')
+    
+    completions = db.relationship('UserChallenge', back_populates='challenge')
+
+    
+class UserChallenge(db.Model):
+    __tablename__ = 'user_challenge'
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), primary_key=True)
+    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # score = db.Column(db.Integer)  # Optional column for score
+
+    user = db.relationship('User', back_populates='completed_challenges')
+    challenge = db.relationship('Challenge', back_populates='completions')

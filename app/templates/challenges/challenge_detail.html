@@ -2,7 +2,66 @@
 
 {% block content %}
 
-<h1 class="text-3xl font-bold font-RobotoMono text-center">{{challenge.title}}</h1>
-<p class="flex-2 text-lg">{{challenge.description}}</p>
+<div id="notification-container" class="fixed bottom-4 right-4 space-y-2 z-50">
+    {% for message in get_flashed_messages() %}
+        {% if 'correct' in message.lower() %}
+            <div role="alert" class="alert alert-success animate-fade-out">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ message }}</span>
+            </div>
+        {% else %}
+            <div role="alert" class="alert alert-error animate-fade-out">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ message }}</span>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div class="bg-base-200 w-[70%] mx-auto rounded-lg p-6 mt-10">
+    <h1 class="text-3xl font-bold font-RobotoMono text-center pb-6">{{ challenge.title }}</h1>
+    <p class="flex-2 text-lg">{{ challenge.description }}</p>
+    <p class="font-bold pt-6">Resources:</p>
+    {% if challenge.resources %}
+        {% set resources = challenge.resources.split(',') %}
+        <ul class="list-disc pl-5">
+            {% for resource in resources %}
+                <li><a href="{{ resource.strip() }}" target="_blank" class="text-accent">{{ resource.strip() }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No resources available.</p>
+    {% endif %}
+    
+    {% if user_has_completed_challenge %}
+        <div class="alert alert-info">
+            <strong>You have already completed this challenge!</strong>
+            <p>Your score: {{ user_challenge.score }} (Completed on {{ user_challenge.completed_at.strftime('%Y-%m-%d %H:%M:%S') }})</p>
+        </div>
+    {% else %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="flex flex-row items-center m-10">
+                <div class="form-control relative flex-grow">
+                    {{ form.flag( class="input placeholder-transparent peer") }}
+                    <label for="flag-input" 
+                    class="
+                    {% if form.flag.data %}
+                    {% else %}
+                    absolute left-3 transition-all text-base-content text-opacity-50 top-4 text-xs peer-placeholder-shown:text-md peer-focus:-top-8 peer-focus:text-md bg-transparent
+                    {% endif %}
+                    "
+                    >{{ form.flag.label }}</label>
+                </div>
+                <button class="btn ml-2">{{ form.submit() }}</button>
+            </div>
+        </form>
+    {% endif %}
+</div>
 
 {% endblock %}
+  

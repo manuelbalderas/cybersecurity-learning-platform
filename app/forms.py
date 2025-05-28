@@ -15,7 +15,6 @@ class RegisterForm(FlaskForm):
     confirm = PasswordField('Confirma contraseña')
     submit = SubmitField("Picale")
 
-class PhishingValidatorForm(FlaskForm):
-    user_input = TextAreaField('Texto', validators=[DataRequired()])
-    result = StringField()
-    submit = SubmitField("Picale")
+class FlagForm(FlaskForm):
+    flag = StringField('Ingresa la bandera: dp{FLAG}', validators=[DataRequired()])
+    submit = SubmitField("ENVIAR")

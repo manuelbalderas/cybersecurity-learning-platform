@@ -3,6 +3,23 @@ module.exports = {
   content: ["./templates/**"],
   theme: {
     extend: {
+      extend: {
+        animation: {
+          'fade-out': 'fadeOut 10s ease-out forwards',
+        },
+        keyframes: {
+          fadeOut: {
+            '0%': {
+              opacity: '1',
+              transform: 'translateY(0)',
+            },
+            '100%': {
+              opacity: '0',
+              transform: 'translateY(-10px)',
+            },
+          },
+        },
+      },
       fontFamily: {
         'Roboto': ['Roboto'],
         'RobotoMono': ['Roboto Mono']
