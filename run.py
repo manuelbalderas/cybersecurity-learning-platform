@@ -1,5 +1,7 @@
-from app import create_app, socket
 import eventlet
+eventlet.monkey_patch()
+
+from app import create_app, socket
 
 eventlet.monkey_patch()
 
