@@ -58,6 +58,7 @@ class Challenge(db.Model):
     
 class UserChallenge(db.Model):
     __tablename__ = 'user_challenge'
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), primary_key=True)
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -65,3 +66,12 @@ class UserChallenge(db.Model):
 
     user = db.relationship('User', back_populates='completed_challenges')
     challenge = db.relationship('Challenge', back_populates='completions')
+
+class ChatMessage(db.Model):
+    __tablename__ = 'chat_messages'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(50), nullable=False)  # 'user' or 'assistant'
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)

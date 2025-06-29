@@ -2,19 +2,20 @@ from flask import Blueprint, render_template
 from flask_socketio import emit
 from flask_login import login_required, current_user
 import markdown
-import redis
 import os
 
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 
 from langchain_ollama.llms import OllamaLLM
-from langchain_redis import RedisChatMessageHistory
 
 from .vector import retriver
+from app.models import ChatMessage
 
-from app import socket
+from app import db
+from app import socket, db
 
 chat = Blueprint('chat', __name__)
 
@@ -29,6 +30,7 @@ Your responses must adhere to the following guidelines:
 2. **Cybersecurity Only:** You should only provide answers related to cybersecurity topics. If asked a question outside of this domain, you should politely redirect the user and inform them that you cannot help with that subject.
 3. **No Harmful Code:** Never provide or suggest code that could be used to damage, disrupt, or compromise systems. If a request involves code, ensure it is ethical, safe, and used for educational purposes.
 4. **Ethical Guidance:** Always encourage responsible cybersecurity practices and help students learn in a safe, ethical, and lawful manner.
+5. **Language**: Your principal language is Spanish. Use clear, concise, and professional language in your responses. Avoid jargon unless it is explained, and ensure that your explanations are accessible to students at various levels of understanding.
 """
 
 prompt = ChatPromptTemplate.from_messages(
@@ -41,27 +43,52 @@ prompt = ChatPromptTemplate.from_messages(
 
 chain = prompt | llm
 
-REDIS_URL = f"redis://:{os.environ.get('REDIS_PASSWORD')}@localhost:6379"
-print(REDIS_URL)
-redis_client = redis.from_url(REDIS_URL)
-
-def get_redis_history(session_id: str) -> BaseChatMessageHistory:
-    return RedisChatMessageHistory(session_id, redis_url=REDIS_URL)
+class ChatMessageHistory(BaseChatMessageHistory):
+    def __init__(self, session_id: str, db_session):
+        self.session_id = session_id
+        self.db_session = db_session
+        
+    @property
+    def messages(self) -> list[BaseMessage]:
+        records = (
+            self.db_session.query(ChatMessage)
+            .filter_by(session_id=self.session_id)
+            .order_by(ChatMessage.timestamp.asc())
+            .all()
+        )
+        
+        history = []
+        for record in records:
+            if record.role == 'user':
+                history.append(HumanMessage(content=record.content))
+            elif record.role == 'ai':
+                history.append(AIMessage(content=record.content))
+        return history
+    
+    def add_user_message(self, message: str) -> None:
+        self._add_message("user", message)
+    
+    def add_ai_message(self, message: str) -> None:
+        self._add_message("ai", message)
+        
+    def _add_message(self, role: str, content: str) -> None:
+        msg = ChatMessage(session_id=self.session_id, role=role, content=content)
+        self.db_session.add(msg)
+        self.db_session.commit()
+    
+    def clear(self) -> None:
+        self.db_session.query(ChatMessage).filter_by(session_id=self.session_id).delete()
+        self.db_session.commit()
+    
+def get_chat_history(session_id: str) -> BaseChatMessageHistory:
+    return ChatMessageHistory(session_id=session_id, db_session=db.session)
 
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    get_redis_history,
+    get_chat_history,
     input_messages_key="input",
     history_messages_key="history",
 )
-
-try:
-    redis_client.ping()
-except redis.ConnectionError:
-    print("Could not connect to Redis. Please check your Redis server.")
-except redis.AuthenticationError:
-    print("Authentication failed for Redis. Please check your credentials.")
-    
 
 @socket.on('connect')
 def handle_connect():
@@ -75,9 +102,9 @@ def handle_disconnect():
 def handle_message(message):
     user_id = str(current_user.id) if current_user.is_authenticated else None
     
-    history = RedisChatMessageHistory(
+    history = ChatMessageHistory(
         session_id=user_id,
-        redis_url=REDIS_URL,
+        db_session=db.session,
     )
     
     information = retriver.invoke(message)
@@ -91,7 +118,6 @@ def handle_message(message):
     history.add_user_message(message)
     history.add_ai_message(response)
     
-    html_result = markdown.markdown(response)
     emit("response", response)
 
 @chat.route('/')

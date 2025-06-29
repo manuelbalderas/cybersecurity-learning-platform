@@ -2286,6 +2286,10 @@ html {
   width: 2.5rem;
 }
 
+.w-20 {
+  width: 5rem;
+}
+
 .w-3\/5 {
   width: 60%;
 }
@@ -2348,6 +2352,10 @@ html {
 
 .items-center {
   align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .justify-between {
@@ -2478,6 +2486,10 @@ html {
   padding: 1.5rem;
 }
 
+.p-8 {
+  padding: 2rem;
+}
+
 .px-10 {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
@@ -2508,6 +2520,10 @@ html {
   padding-bottom: 1.75rem;
 }
 
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
 .pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -2530,6 +2546,11 @@ html {
 
 .font-RobotoMono {
   font-family: Roboto Mono;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .text-3xl {
@@ -2576,8 +2597,16 @@ html {
   font-weight: 700;
 }
 
+.font-light {
+  font-weight: 300;
+}
+
 .font-medium {
   font-weight: 500;
+}
+
+.font-normal {
+  font-weight: 400;
 }
 
 .text-accent {
@@ -2610,6 +2639,10 @@ html {
   color: rgb(22 163 74 / var(--tw-text-opacity, 1));
 }
 
+.text-inherit {
+  color: inherit;
+}
+
 .text-opacity-50 {
   --tw-text-opacity: 0.5;
 }
@@ -2624,6 +2657,10 @@ html {
 
 .opacity-50 {
   opacity: 0.5;
+}
+
+.opacity-60 {
+  opacity: 0.6;
 }
 
 .opacity-70 {
