@@ -45,6 +45,7 @@ class Challenge(db.Model):
     description = db.Column(db.Text)
     files = db.Column(db.String(255))
     resources = db.Column(db.String(255))
+    points = db.Column(db.Integer, default=0)  # Optional column for points
     flag = db.Column(db.String(30), nullable=False)
 
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
@@ -72,6 +73,7 @@ class ChatMessage(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Nullable for anonymous sessions
     role = db.Column(db.String(50), nullable=False)  # 'user' or 'assistant'
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

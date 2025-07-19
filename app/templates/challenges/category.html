@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="flex flex-col mx-24">
+<h1 class="text-3xl font-bold font-RobotoMono py-7 text-center">{{category.name.upper()}}</h1>
+<div class="flex flex-col items-center space-x-4 lg:flex-row-reverse">
+<img src="{{ url_for('static', filename='images/' ~ category.image_url) }}" class="w-full mx-auto">
+<p class="flex-2 text-lg">{{category.description}}</p>
+<img/>
+</div>
+
+<h2 class="text-3xl font-bold font-RobotoMono py-7">CONTENIDO</h2>
+
+<div class="overflow-x-auto">
+    <table class="table table-zebra text-base">
+      <!-- head -->
+      <thead>
+        <tr class="font-RobotoMono text-base">
+          <th>{{ 'Categoria'.upper() }}</th>
+          <th>{{ 'Reto'.upper() }}</th>
+          <th>{{ 'Puntos'.upper() }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- challenges rows -->
+        {% for challenge in category.challenges %}
+        <tr>
+          <td>{{ challenge.category.name }}</td>
+          <td class="hover:text-accent"><a href="/challenges/{{ challenge.alias }}">{{ challenge.category.name }}</a></td>
+          <td>{{ challenge.points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}

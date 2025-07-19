@@ -1,4 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 sm:p-6 md:p-8 lg:p-10">
+  {% for challenge in challenges %}
+    <div class="h-full relative">
+      <!-- Background div: Positioned absolutely behind the image -->
+      <div class="absolute bottom-0 left-0 right-0 h-[60%] bg-base-200 opacity-70"></div>
+      <div class="relative z-10 flex flex-col">
+        <!-- Image with a higher z-index so it stays above the background -->
+        <img src="{{ url_for('static', filename='images/' ~ challenge.image_url) }}" class="w-full mx-auto object-cover h-64 sm:h-72 md:h-80 lg:h-96">
+        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold font-RobotoMono p-2 hover:text-accent">
+          <a href="overview/{{ challenge.alias }}">{{ challenge.name.upper() }}</a>
+        </h2>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
 {% endblock %}

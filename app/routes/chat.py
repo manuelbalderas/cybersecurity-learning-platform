@@ -4,6 +4,12 @@ from flask_login import login_required, current_user
 import markdown
 import os
 
+import uuid
+import random
+import string
+import time
+import secrets
+
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -31,6 +37,7 @@ Your responses must adhere to the following guidelines:
 3. **No Harmful Code:** Never provide or suggest code that could be used to damage, disrupt, or compromise systems. If a request involves code, ensure it is ethical, safe, and used for educational purposes.
 4. **Ethical Guidance:** Always encourage responsible cybersecurity practices and help students learn in a safe, ethical, and lawful manner.
 5. **Language**: Your principal language is Spanish. Use clear, concise, and professional language in your responses. Avoid jargon unless it is explained, and ensure that your explanations are accessible to students at various levels of understanding.
+6. **Contextual Understanding:** You should be able to understand the context of the conversation and provide relevant information based on the user's previous messages. Try to answer questions using only the provided context and avoid hallucinations or assumptions about the user's intent. 
 """
 
 prompt = ChatPromptTemplate.from_messages(
@@ -44,8 +51,9 @@ prompt = ChatPromptTemplate.from_messages(
 chain = prompt | llm
 
 class ChatMessageHistory(BaseChatMessageHistory):
-    def __init__(self, session_id: str, db_session):
-        self.session_id = session_id
+    def __init__(self, session_id: str, user_id: str, db_session):
+        self.session_id = session_id 
+        self.user_id = user_id
         self.db_session = db_session
         
     @property
@@ -64,6 +72,7 @@ class ChatMessageHistory(BaseChatMessageHistory):
             elif record.role == 'ai':
                 history.append(AIMessage(content=record.content))
         return history
+
     
     def add_user_message(self, message: str) -> None:
         self._add_message("user", message)
@@ -72,7 +81,7 @@ class ChatMessageHistory(BaseChatMessageHistory):
         self._add_message("ai", message)
         
     def _add_message(self, role: str, content: str) -> None:
-        msg = ChatMessage(session_id=self.session_id, role=role, content=content)
+        msg = ChatMessage(user_id=self.user_id, session_id=self.session_id, role=role, content=content)
         self.db_session.add(msg)
         self.db_session.commit()
     
@@ -81,7 +90,16 @@ class ChatMessageHistory(BaseChatMessageHistory):
         self.db_session.commit()
     
 def get_chat_history(session_id: str) -> BaseChatMessageHistory:
-    return ChatMessageHistory(session_id=session_id, db_session=db.session)
+    user_id = str(current_user.id) if current_user.is_authenticated else None
+    return ChatMessageHistory(session_id=session_id, user_id=user_id, db_session=db.session)
+
+def generate_session_id(user_id: str) -> str:
+    base_uuid = str(uuid.uuid4())
+    timestamp = int(time.time() * 1000)  # Current time in milliseconds
+    random_str = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    secure_random = secrets.token_hex(8)  # Generate a secure random string
+    random_id = f'{user_id}-{base_uuid}-{timestamp}-{random_str}-{secure_random}'
+    return random_id
 
 chain_with_history = RunnableWithMessageHistory(
     chain,
@@ -101,9 +119,11 @@ def handle_disconnect():
 @socket.on("message")
 def handle_message(message):
     user_id = str(current_user.id) if current_user.is_authenticated else None
+    session_id = generate_session_id(user_id) if user_id else None
     
     history = ChatMessageHistory(
-        session_id=user_id,
+        session_id=session_id,
+        user_id=user_id,
         db_session=db.session,
     )
     
@@ -112,14 +132,14 @@ def handle_message(message):
     response = chain_with_history.invoke(
         {"input": message,
         "context": information,},
-        config={"configurable": {"session_id": user_id}},
+        config={"configurable": {"session_id": session_id}},
     )
 
     history.add_user_message(message)
     history.add_ai_message(response)
     
     emit("response", response)
-
+    
 @chat.route('/')
 @login_required
 def index():

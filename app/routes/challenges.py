@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 from app.forms import FlagForm
 
 from app.models import Challenge, UserChallenge
+from app.models import Category
 
 from app import db
 
@@ -11,9 +12,25 @@ challenges = Blueprint('challenges', __name__)
 
 @challenges.route('/')
 def index():
-    return render_template('challenges/index.html', page_title="Retos")
+    challenges = Category.query.all()
+    return render_template('challenges/index.html', challenges=challenges, page_title="Retos")
 
-@challenges.route('/<challenge_title>', methods=['GET', 'POST'])
+@challenges.route('overview/<category_alias>', methods=['GET'])
+@login_required
+def get_category(category_alias):
+    category = Category.query.filter_by(alias=category_alias).first()
+    
+    if category is None:
+        abort(404)
+    
+    challenges = Challenge.query.filter_by(category_id=category.id).all()
+    
+    return render_template('challenges/category.html', 
+                           category=category, 
+                           challenges=challenges, 
+                           page_title=category.name)
+
+@challenges.route('<challenge_title>', methods=['GET', 'POST'])
 @login_required
 def get_challenges(challenge_title):
     challenge = Challenge.query.filter_by(alias=challenge_title).first()
