@@ -1,14 +1,13 @@
 from flask import Blueprint, render_template
 from flask_socketio import emit
 from flask_login import login_required, current_user
-import markdown
-import os
 
 import uuid
 import random
 import string
 import time
 import secrets
+import json
 
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -49,6 +48,15 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 chain = prompt | llm
+
+def log_message(query, generated, reference, log_path='rag_eval_log.jsonl'):
+    log_entry = {
+        "query": query,
+        "generated": generated,
+        "reference": reference
+    }
+    with open(log_path, 'a') as f:
+        f.write(json.dumps(log_entry) + '\n')
 
 class ChatMessageHistory(BaseChatMessageHistory):
     def __init__(self, session_id: str, user_id: str, db_session):
@@ -135,6 +143,10 @@ def handle_message(message):
         config={"configurable": {"session_id": session_id}},
     )
 
+    contents = [doc.page_content for doc in information if hasattr(doc, 'page_content')]
+    for content in contents:
+        log_message(query=message, generated=response, reference=content)
+    
     history.add_user_message(message)
     history.add_ai_message(response)
     
