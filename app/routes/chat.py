@@ -8,11 +8,12 @@ import string
 import time
 import secrets
 import json
+import joblib
 
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_core.messages import BaseMessage
 
 from langchain_ollama.llms import OllamaLLM
 
@@ -24,7 +25,7 @@ from app import socket, db
 
 chat = Blueprint('chat', __name__)
 
-llm = OllamaLLM(model='llama3.1:8b')
+llm = OllamaLLM(model='mistral')
 
 template = """
 You are Pwnie, an artificial intelligence model specifically designed to assist students in learning about cybersecurity.
@@ -48,6 +49,9 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 chain = prompt | llm
+
+tfidf_vectorizer = joblib.load("models/tfidf_vectorizer.joblib")
+knn_model = joblib.load("models/knn_model.joblib")
 
 def log_message(query, generated, reference, log_path='rag_eval_log.jsonl'):
     log_entry = {
@@ -109,6 +113,12 @@ def generate_session_id(user_id: str) -> str:
     random_id = f'{user_id}-{base_uuid}-{timestamp}-{random_str}-{secure_random}'
     return random_id
 
+def predict(text: str) -> bool:
+    text_vector = tfidf_vectorizer.transform([text])
+    prediction = knn_model.predict(text_vector)
+    print(f'Prediction for "{text}": {prediction[0]}')
+    return prediction[0] == 1
+
 chain_with_history = RunnableWithMessageHistory(
     chain,
     get_chat_history,
@@ -129,6 +139,13 @@ def handle_message(message):
     user_id = str(current_user.id) if current_user.is_authenticated else None
     session_id = generate_session_id(user_id) if user_id else None
     
+    if not current_user.has_done_streak_today:
+        prediction = predict(message)
+        if prediction:
+            print(f"User {user_id} has done a streak today.")
+            current_user.update_streak()
+            db.session.commit()
+    
     history = ChatMessageHistory(
         session_id=session_id,
         user_id=user_id,
@@ -138,9 +155,13 @@ def handle_message(message):
     information = retriver.invoke(message)
     
     response = chain_with_history.invoke(
-        {"input": message,
-        "context": information,},
-        config={"configurable": {"session_id": session_id}},
+        {
+            "input": message,
+            "context": information,
+        },
+        config = {
+            "configurable": {"session_id": session_id}
+        },
     )
 
     contents = [doc.page_content for doc in information if hasattr(doc, 'page_content')]

@@ -1,0 +1,18 @@
+challenge_title: Memoria con truco 
+challenge_alias: memory 
+challenge_category:  Aprender chido mamalon
+challenge_description: |
+  Los sistemas operativos modernos emplean memoria virtual para abstraer el espacio de direcciones físico.
+  Esto permite que los procesos crean tener acceso exclusivo a toda la RAM disponible.
+
+  Un mecanismo fundamental para esto es la paginación, donde el espacio de direcciones se divide en bloques llamados páginas.
+  El sistema mantiene una tabla de páginas que traduce direcciones virtuales a físicas.
+
+  Para optimizar el rendimiento, se utiliza la TLB (Translation Lookaside Buffer), una caché de traducciones recientes.
+  Cuando ocurre un fallo de TLB (TLB miss), el sistema debe consultar la tabla de páginas completa, lo que introduce latencia.
+challenge_files: community.svg
+# challenge_resources:
+#   - https://google.com
+#   - https://github.com
+challenge_points: 100
+challenge_flag: nca{translation-lookaside-buffer}

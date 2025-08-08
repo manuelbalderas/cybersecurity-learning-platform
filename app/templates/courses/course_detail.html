@@ -26,8 +26,8 @@
         <!-- challenges rows -->
         {% for challenge in course.challenges %}
         <tr>
-          <td>{{ challenge.category.name }}</td>
-          <td class="hover:text-accent"><a href="/challenges/{{ challenge.alias }}">{{ challenge.category.name }}</a></td>
+          <td>{{ challenge.category }}</td>
+          <td class="hover:text-accent"><a href="/challenges/{{ challenge.alias }}">{{ challenge.title }}</a></td>
           <td>{{ challenge.points }}</td>
         </tr>
         {% endfor %}

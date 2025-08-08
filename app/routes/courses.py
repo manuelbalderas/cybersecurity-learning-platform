@@ -11,12 +11,9 @@ def index():
 
 @courses.route('/<course_title>')
 def get_courses(course_title):
+    print('XD')
     course = Course.query.filter_by(alias=course_title).first()
     courses = Course.query.all()
-    for c in courses:
-        print(c)
-        for challenge in c.challenges:
-            print(challenge.category.name)
     if course is None:
         abort(404)
         # Remember to delete this line and create a 404 webpage, then use render_template to that

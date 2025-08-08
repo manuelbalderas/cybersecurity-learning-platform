@@ -4,31 +4,10 @@ from flask_login import current_user, login_required
 from app.forms import FlagForm
 
 from app.models import Challenge, UserChallenge
-from app.models import Category
 
 from app import db
 
 challenges = Blueprint('challenges', __name__)
-
-@challenges.route('/')
-def index():
-    challenges = Category.query.all()
-    return render_template('challenges/index.html', challenges=challenges, page_title="Retos")
-
-@challenges.route('overview/<category_alias>', methods=['GET'])
-@login_required
-def get_category(category_alias):
-    category = Category.query.filter_by(alias=category_alias).first()
-    
-    if category is None:
-        abort(404)
-    
-    challenges = Challenge.query.filter_by(category_id=category.id).all()
-    
-    return render_template('challenges/category.html', 
-                           category=category, 
-                           challenges=challenges, 
-                           page_title=category.name)
 
 @challenges.route('<challenge_title>', methods=['GET', 'POST'])
 @login_required
@@ -59,6 +38,8 @@ def get_challenges(challenge_title):
                 # score=100  # Or whatever score the user achieved
             )
             db.session.add(user_challenge)
+            if not current_user.has_done_streak_today:
+                current_user.update_streak()
             db.session.commit()
             flash("Correcto")
             

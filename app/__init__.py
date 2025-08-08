@@ -9,7 +9,7 @@ from config import config
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login = LoginManager()
-socket = SocketIO()
+socket = SocketIO(cors_allowed_origins='*')
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -18,7 +18,7 @@ def create_app(config_name='default'):
     db.init_app(app)
     login.init_app(app)
     bcrypt.init_app(app)
-    socket.init_app(app, cors_allowed_origins='*')
+    socket.init_app(app)
 
     login.login_view = 'auth.login'
 
@@ -33,8 +33,8 @@ def create_app(config_name='default'):
 
     from .routes import chat_blueprint
     app.register_blueprint(chat_blueprint, url_prefix='/chat')
-
+    
     from .routes import main_blueprint
     app.register_blueprint(main_blueprint)
-
+    
     return app

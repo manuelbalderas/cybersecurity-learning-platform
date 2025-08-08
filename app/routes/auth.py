@@ -20,6 +20,8 @@ def login():
         user = User.query.filter_by(email = email).first()
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
+            user.check_and_reset_streak()
+            db.session.commit()
             flash("Inicio de sesión exitoso")
         else:
             flash("Inicio de sesión erroneo")
