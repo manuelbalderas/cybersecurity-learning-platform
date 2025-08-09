@@ -20,21 +20,30 @@ def create_app(config_name='default'):
     bcrypt.init_app(app)
     socket.init_app(app)
 
-    login.login_view = 'auth.login'
+    login.login_view = 'auth_frontend_bp.login'
 
-    from .routes import auth_blueprint
-    app.register_blueprint(auth_blueprint)
-
-    from .routes import challenges_blueprint
-    app.register_blueprint(challenges_blueprint, url_prefix='/challenges')
-
-    from .routes import courses_blueprint 
-    app.register_blueprint(courses_blueprint, url_prefix='/courses')
-
-    from .routes import chat_blueprint
-    app.register_blueprint(chat_blueprint, url_prefix='/chat')
+    from .routes.api import auth_api_bp
+    app.register_blueprint(auth_api_bp, url_prefix='/api/auth')
     
-    from .routes import main_blueprint
-    app.register_blueprint(main_blueprint)
+    from .routes.frontend import auth_frontend_bp
+    app.register_blueprint(auth_frontend_bp, url_prefix='/')
+
+    from .routes.api import challenges_api_bp
+    app.register_blueprint(challenges_api_bp, url_prefix='/api/challenges')
+    
+    from .routes.frontend import challenges_frontend_bp
+    app.register_blueprint(challenges_frontend_bp, url_prefix='/challenges')
+    
+    from .routes.api import courses_api_bp
+    app.register_blueprint(courses_api_bp, url_prefix='/api/courses')
+    
+    from .routes.frontend import courses_frontend_bp
+    app.register_blueprint(courses_frontend_bp, url_prefix='/courses')
+    
+    from .routes.frontend import chat_frontend_bp
+    app.register_blueprint(chat_frontend_bp, url_prefix='/chat')
+    
+    from .routes.frontend import main_frontend_bp
+    app.register_blueprint(main_frontend_bp, url_prefix='/')
     
     return app

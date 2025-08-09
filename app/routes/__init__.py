@@ -1,5 +1,2 @@
-from .auth import auth as auth_blueprint
-from .challenges import challenges as challenges_blueprint
-from .courses import courses as courses_blueprint
-from .chat import chat as chat_blueprint
-from .main import main as main_blueprint
+from .api import auth_api_bp, challenges_api_bp, courses_api_bp
+from .frontend import auth_frontend_bp, challenges_frontend_bp, courses_frontend_bp

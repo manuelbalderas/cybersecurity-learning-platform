@@ -2,6 +2,7 @@ import eventlet
 eventlet.monkey_patch()
 
 from app import create_app, socket
+import app.routes.api.chat_socket
 
 eventlet.monkey_patch()
 

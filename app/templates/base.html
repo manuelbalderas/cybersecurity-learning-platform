@@ -58,7 +58,7 @@
                     </svg>
                     <span>{{current_user.current_streak}}</span>
                 </span>
-                <form id="logout-form" action="{{ url_for('auth.logout') }}" method="POST" style="display: none;"></form>
+                <form id="logout-form" action="{{ url_for('auth_frontend.logout') }}" method="POST" style="display: none;"></form>
                 <a href="#" onclick="document.getElementById('logout-form').submit();" class="flex items-center space-x-2 hover:text-accent py-2">
                   <!-- logout SVG -->
                   <svg class="w-6 fill-current" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@
                     </svg>
                     <span class="text">{{current_user.current_streak}}</span>
                 </span>
-                    <form id="logout-form" action="{{ url_for('auth.logout') }}" method="POST" style="display: none;"></form>
+                    <form id="logout-form" action="{{ url_for('auth_frontend.logout') }}" method="POST" style="display: none;"></form>
                     <a href="#" onclick="document.getElementById('logout-form').submit();" class="flex items-center space-x-2 hover:text-accent">
                         <svg class="w-6 fill-current" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>

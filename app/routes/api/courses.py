@@ -1,15 +1,14 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint 
+from app.services.courses_service import get_all_courses, get_course_by_alias
 
-from app.models import Course
+courses_api_bp = Blueprint('courses_api', __name__)
 
-courses = Blueprint('courses', __name__)
-
-@courses.route('/')
+@courses_api_bp.route('/')
 def index():
-    courses = Course.query.all()
+    courses = get_all_courses()
     return render_template('courses/index.html', courses=courses, page_title="Cursos")
 
-@courses.route('/<course_title>')
+@courses_api_bp.route('/<course_title>')
 def get_courses(course_title):
     print('XD')
     course = Course.query.filter_by(alias=course_title).first()
