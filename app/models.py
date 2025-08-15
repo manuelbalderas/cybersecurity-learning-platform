@@ -48,6 +48,32 @@ class User(UserMixin, db.Model):
     @property
     def has_done_streak_today(self):
         return self.last_streak_date == date.today()
+    
+    @property
+    def started_courses(self):
+        return (
+            Course.query
+            .join(Challenge, Challenge.course_id == Course.id)
+            .join(UserChallenge, UserChallenge.challenge_id == Challenge.id)
+            .filter(UserChallenge.user_id == self.id)
+            .distinct()
+            .all()
+        )
+    
+    def has_started_course(self, course):
+        return course in self.started_courses
+    
+    def get_completed_challenges(self, course):
+        return (
+            Challenge.query
+            .join(UserChallenge, UserChallenge.challenge_id == Challenge.id)
+            .filter(
+                UserChallenge.user_id == self.id,
+                Challenge.course_id == course.id
+            )
+            .all()
+        )
+
 
 @login.user_loader
 def load_user(id):

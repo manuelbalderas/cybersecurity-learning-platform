@@ -7,7 +7,7 @@ print("Chat socket initialized!")
 
 @socket.on('connect')
 def handle_connect():
-    print('Client connected!')
+    print(f'Client connected on worker {id(socket)}!')
 
 @socket.on('disconnect')
 def handle_disconnect():
@@ -22,4 +22,4 @@ def handle_message(message):
         db.session.commit()
 
     response = process_chat_message(user_id, message)
-    emit("response", response)
+    emit("response", response, broadcast=True)#, namespace='/chat')

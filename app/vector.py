@@ -2,34 +2,37 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 import os
-import pandas as pd
+import json
 
-df = pd.read_csv("data.csv")
+input_file = './datasets/rag_dataset.jsonl'
 embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+
 
 db_location = "./chrome_langchain_db"
 add_documents = not os.path.exists(db_location)
 
-if add_documents:
-    documents = []
-    ids = []
-    
-    for i, row in df.iterrows():
-        document = Document(
-            page_content = row['Topic'] + ' ' + row['Definition'] + " " + row['Example/Use Case'],
-            metadata = {"Domain": row['Domain']},
-            id = str(i)
-        )
-        ids.append(str(i))
-        documents.append(document)
-
 vectorstore = Chroma(
-    collection_name='cybersecurity_qa',
+    collection_name='cybersecurity_terminology',
     persist_directory=db_location,
     embedding_function=embeddings
 )
 
 if add_documents:
+    documents = []
+    ids = []
+
+    with open(input_file, 'r', encoding='utf-8') as f:
+        for i, line in enumerate(f):
+            if line.strip():
+                record = json.loads(line)
+                document = Document(
+                    page_content = record['term'] + ' is ' + record['definition'],
+                    metadata = {'term': record['term'], "cluster": record['cluster']},
+                    id = str(i)
+                )
+            ids.append(str(i))
+            documents.append(document)
+
     vectorstore.add_documents(documents=documents, ids=ids)
     
 retriver = vectorstore.as_retriever(
