@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask_socketio import emit
 from app import socket, db
-from app.services.chat_service import process_chat_message, predict_flag_relevance
+from app.services.chat_service import process_chat_message, is_message_educational
 
 print("Chat socket initialized!")
 
@@ -17,7 +17,7 @@ def handle_disconnect():
 def handle_message(message):
     user_id = str(current_user.id) if current_user.is_authenticated else None
 
-    if not current_user.has_done_streak_today and predict_flag_relevance(message):
+    if not current_user.has_done_streak_today and is_message_educational(message):
         current_user.update_streak()
         db.session.commit()
 

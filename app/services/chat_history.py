@@ -21,6 +21,20 @@ class ChatMessageHistory(BaseChatMessageHistory):
             elif r.role == 'ai':
                 history.append(AIMessage(content=r.content))
         return history
+    
+    def get_last_n_messages(self, n: int):
+        records = (self.db_session.query(ChatMessage)
+                   .filter_by(session_id=self.session_id)
+                   .order_by(ChatMessage.timestamp.desc())
+                   .limit(n)
+                   .all())
+        history = []
+        for r in reversed(records):
+            if r.role == 'user':
+                history.append(HumanMessage(content=r.content))
+            elif r.role == 'ai':
+                history.append(AIMessage(content=r.content))
+        return history
 
     def add_user_message(self, message: str):
         self._add_message("user", message)
