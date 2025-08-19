@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<!-- NOTIFICATION CONTAINER (DAISYUI STYLES + YOUR LOGIC) -->
 <div id="notification-container" class="fixed bottom-4 right-4 space-y-2 z-50">
     {% for message in get_flashed_messages() %}
         {% if 'correct' in message.lower() %}
@@ -22,46 +23,87 @@
     {% endfor %}
 </div>
 
-<div class="bg-base-200 w-[70%] mx-auto rounded-lg p-6 mt-10">
-    <h1 class="text-3xl font-bold font-RobotoMono text-center pb-6">{{ challenge.title }}</h1>
-    <p class="flex-2 text-lg">{{ challenge.description }}</p>
-    <p class="font-bold pt-6">Resources:</p>
-    {% if challenge.resources %}
-        {% set resources = challenge.resources.split(',') %}
-        <ul class="list-disc pl-5">
-            {% for resource in resources %}
-                <li><a href="{{ resource.strip() }}" target="_blank" class="text-accent">{{ resource.strip() }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No resources available.</p>
-    {% endif %}
-    
-    {% if user_has_completed_challenge %}
-        <div class="alert alert-info">
-            <strong>You have already completed this challenge!</strong>
-            <p>Your score: {{ user_challenge.score }} (Completed on {{ user_challenge.completed_at.strftime('%Y-%m-%d %H:%M:%S') }})</p>
+<!-- DAISYUI CHALLENGE CARD -->
+<div class="max-w-lg mx-auto p-4 bg-base-100 rounded-box shadow-md mt-12">
+    <div class="flex items-center justify-between mb-2">
+        <a href="/courses/{{challenge.course.alias}}" class="flex items-center hover:text-accent">
+            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+</svg>
+            Volver al curso
+        </a>
+    </div>
+    <div class="mb-4">
+        <h1 class="text-xl font-bold text-center">{{ challenge.title }}</h1>
+        <div class="flex items-center gap-2 text-sm text-base-content/60 mt-4 justify-center">
+            <span class="badge badge-neutral p-4">{{ challenge.points }} pts</span>
+            {% if user_has_completed_challenge %}
+                <span class="badge badge-success gap-1 font-normal bold p-4">
+                  <span class="material-icons text-sm">
+                      <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+</svg>
+
+                </span> Resuelto
+                </span>
+            {% else %}
+                <span class="badge badge-outline gap-1 font-normal p-4">
+                  <span class="material-icons text-sm">
+                      <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+</svg>
+
+                  </span> Sin resolver
+                </span>
+            {% endif %}
         </div>
+    </div>
+    <div class="mb-3 text-base-content/80" style="white-space: pre-line;">
+        {{ challenge.description }}
+    </div>
+    {% if challenge.attachment %}
+        <a href="{{ challenge.attachment }}" class="link link-primary mb-3 block">Download Attachment</a>
+    {% endif %}
+
+    {% if challenge.resources %}
+        <details class="collapse collapse-arrow mt-3 border border-base-300 bg-base-200">
+            <summary class="collapse-title text-base font-medium">Resources</summary>
+            <div class="collapse-content">
+                <ul class="menu menu-compact">
+                    {% set resources = challenge.resources.split(',') %}
+                    {% for resource in resources %}
+                        <li class="text-sm">
+                            <a href="{{ resource.strip() }}" class="link text-accent" target="_blank">{{ resource.strip() }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </details>
+    {% endif %}
+
+    {% if not user_has_completed_challenge %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="flex flex-row items-center mt-8">
+                <div class="form-control relative flex-grow">
+                    {{ form.flag(class="input input-bordered w-full max-w-xs", id="flag-input", autocomplete="off", placeholder=form.flag.label.text) }}
+                </div>
+                {{ form.submit(class='btn') }}
+            </div>
+        </form>
     {% else %}
         <form method="POST">
             {{ form.hidden_tag() }}
-            <div class="flex flex-row items-center m-10">
+            <div class="flex flex-row items-center mt-8">
                 <div class="form-control relative flex-grow">
-                    {{ form.flag( class="input placeholder-transparent peer") }}
-                    <label for="flag-input" 
-                    class="
-                    {% if form.flag.data %}
-                    {% else %}
-                    absolute left-3 transition-all text-base-content text-opacity-50 top-4 text-xs peer-placeholder-shown:text-md peer-focus:-top-8 peer-focus:text-md bg-transparent
-                    {% endif %}
-                    "
-                    >{{ form.flag.label }}</label>
+                    {{ form.flag(class="input input-bordered w-full max-w-xs", id="flag-input", autocomplete="off", placeholder=challenge.flag, disabled="disabled") }}
                 </div>
-                <button class="btn ml-2">{{ form.submit() }}</button>
+                {{ form.submit(class='btn', disabled='disabled') }}
             </div>
         </form>
     {% endif %}
 </div>
+
 
 {% endblock %}
   

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email, EqualTo
 class LoginForm(FlaskForm):
     email = StringField('Correo electrónico', validators=[DataRequired(), Email()])
     password = PasswordField('Contraseña', validators=[DataRequired()])
-    submit = SubmitField("Picale")
+    submit = SubmitField("Ingresar")
 
 
 class RegisterForm(FlaskForm):
@@ -13,8 +13,8 @@ class RegisterForm(FlaskForm):
     email = StringField('Correo electrónico', validators=[DataRequired(), Email()])
     password = PasswordField('Contraseña', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Confirma contraseña')
-    submit = SubmitField("Picale")
+    submit = SubmitField("Registrar")
 
 class FlagForm(FlaskForm):
-    flag = StringField('Ingresa la bandera: dp{FLAG}', validators=[DataRequired()])
-    submit = SubmitField("ENVIAR")
+    flag = StringField('Ingresa la bandera', validators=[DataRequired()])
+    submit = SubmitField("Enviar")

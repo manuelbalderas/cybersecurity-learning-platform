@@ -1,4 +1,70 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
+<div class="w-full min-h-screen bg-base-100 px-6 py-10">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-2">Política de Privacidad</h1>
+    <p class="text-sm opacity-70 mb-6">Última actualización: {{ last_update or "17 de agosto, 2025" }}</p>
+
+    <div class="space-y-8">
+      
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">Información que recopilamos</h2>
+        <p>
+          Cuando te registras en <span class="font-semibold">{{ site_name or "nuestro sitio" }}</span>
+          pedimos lo mínimo necesario:
+        </p>
+        <ul class="list-disc list-inside mt-2 space-y-1">
+          <li><span class="font-semibold">Correo electrónico:</span> para tu cuenta y comunicación.</li>
+          <li><span class="font-semibold">Contraseña:</span> almacenada en forma encriptada, nunca tenemos acceso al valor original.</li>
+        </ul>
+
+        <p class="mt-4">
+          Además, cuando utilizas nuestro <span class="font-semibold">chatbot</span>, guardamos los mensajes enviados y recibidos para:
+        </p>
+        <ul class="list-disc list-inside mt-2 space-y-1">
+          <li>Mejorar el rendimiento y precisión.</li>
+          <li>Entrenar futuros modelos de IA.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">Uso de la información</h2>
+        <ul class="list-disc list-inside mt-2 space-y-1">
+          <li>Darte acceso seguro a tu cuenta.</li>
+          <li>Mejorar y mantener nuestro servicio.</li>
+          <li>Entrenar y mejorar nuestro chatbot.</li>
+        </ul>
+        <p class="mt-2">No compartimos tu información con terceros para fines comerciales.</p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">Seguridad de tus datos</h2>
+        <p class="mt-2">
+          - Contraseñas cifradas con técnicas seguras.<br>
+          - Acceso restringido a la base de datos.<br>
+          - Logs de chatbot almacenados de forma segura.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">Tus derechos</h2>
+        <ul class="list-disc list-inside mt-2 space-y-1">
+          <li>Acceder, corregir o eliminar tus datos.</li>
+          <li>Solicitar la eliminación de tu cuenta.</li>
+          <li>Pedir que tus mensajes no se usen para entrenamiento (escribiendo a nuestro correo de soporte).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold mb-2">Contacto</h2>
+        <p class="mt-2">
+          Si tienes dudas o quieres ejercer alguno de tus derechos, escríbenos a:  
+          <span class="badge badge-primary mt-2">{{ support_email or "contact@dailypwn.com" }}</span>
+        </p>
+      </section>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

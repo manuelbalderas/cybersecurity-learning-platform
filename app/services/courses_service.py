@@ -18,11 +18,11 @@ def get_finished_courses():
     total_finished_courses = {}
     for course in total_courses:
         total_challenges = len(get_challenges_by_course(course))
-        completed_challenges = len(current_user.get_completed_challenges(course))
+        completed_challenges = len(current_user.get_completed_challenges_by_course(course))
         total_finished_courses[course] = total_challenges == completed_challenges and total_challenges != 0
     return total_finished_courses
 
 def get_calculate_percentage(course):
     total_challenges = len(get_challenges_by_course(course))
-    completed_challenges = len(current_user.get_completed_challenges(course))
+    completed_challenges = len(current_user.get_completed_challenges_by_course(course))
     return (completed_challenges / total_challenges) * 100 if completed_challenges else 0

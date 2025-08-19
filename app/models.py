@@ -63,16 +63,13 @@ class User(UserMixin, db.Model):
     def has_started_course(self, course):
         return course in self.started_courses
     
-    def get_completed_challenges(self, course):
-        return (
-            Challenge.query
-            .join(UserChallenge, UserChallenge.challenge_id == Challenge.id)
-            .filter(
-                UserChallenge.user_id == self.id,
-                Challenge.course_id == course.id
-            )
-            .all()
-        )
+    def get_completed_challenges_by_course(self, course):
+        return [c for c in self.completed_challenges if c.challenge.course.id == course.id]
+        
+    @property 
+    def total_points(self):
+        return sum(c.challenge.points for c in self.completed_challenges)
+    
 
 
 @login.user_loader
