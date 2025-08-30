@@ -6,7 +6,9 @@
 <h1 class="text-3xl font-bold font-RobotoMono py-7 text-center">{{course.title.upper()}}</h1>
 <div class="flex flex-col items-center space-x-4 lg:flex-row-reverse">
 <img src="{{ url_for('static', filename='images/' ~ course.image_url) }}" class="w-full mx-auto">
-<p class="flex-2 text-lg">{{course.description}}</p>
+<div class="flex-2 text-lg" style="white-space: pre-line;">
+  {{ course.description }}
+</div>
 <img/>
 </div>
 
@@ -17,14 +19,14 @@
       <!-- head -->
       <thead>
         <tr class="font-RobotoMono text-base">
-          <th>{{ 'Categoria'.upper() }}</th>
-          <th>{{ 'Reto'.upper() }}</th>
-          <th>{{ 'Puntos'.upper() }}</th>
+          <th>CATEGORÍA</th>
+          <th>RETO</th>
+          <th>PUNTOS</th>
         </tr>
       </thead>
       <tbody>
         <!-- challenges rows -->
-        {% for challenge in course.challenges %}
+        {% for challenge in course.challenges|sort(attribute='points') %}
         <tr>
           <td>{{ challenge.category }}</td>
           <td class="hover:text-accent"><a href="/challenges/{{ challenge.alias }}">{{ challenge.title }}</a></td>

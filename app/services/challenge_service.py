@@ -13,7 +13,7 @@ def get_user_challenge(user_id, challenge_id):
 def submit_flag(user, challenge, flag):
     print(flag)
     print(challenge.flag)
-    if flag == challenge.flag:
+    if flag.lower() == challenge.flag.lower():
         user_challenge = UserChallenge(
             user_id=user.id,
             challenge_id=challenge.id,
@@ -22,6 +22,6 @@ def submit_flag(user, challenge, flag):
         if not user.has_done_streak_today:
             user.update_streak()
         db.session.commit()
-        return True, "Correcto"
+        return True, "Correcto! Esa es la bandera"
     else:
-        return False, "Error! los sandwitches eran de huevo"
+        return False, "Error! Intenta nuevamente"

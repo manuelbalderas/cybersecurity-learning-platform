@@ -29,6 +29,8 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
     require('daisyui'),
+    require('@tailwindcss/line-clamp'),
+
   ],
   daisyui: {
     themes: ["lofi", "dark", "cupcake", "retro", "dracula"],

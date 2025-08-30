@@ -6,7 +6,7 @@
 <h1 class="text-3xl font-bold font-RobotoMono py-7 text-center">{{category.name.upper()}}</h1>
 <div class="flex flex-col items-center space-x-4 lg:flex-row-reverse">
 <img src="{{ url_for('static', filename='images/' ~ category.image_url) }}" class="w-full mx-auto">
-<p class="flex-2 text-lg">{{category.description}}</p>
+<p class="flex-2 text-lg" style="white-space: pre-line;">{{category.description}}</p>
 <img/>
 </div>
 

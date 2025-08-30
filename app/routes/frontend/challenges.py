@@ -9,6 +9,7 @@ challenges_frontend_bp = Blueprint('challenges_frontend', __name__)
 @login_required
 def get_challenges(challenge_title):
     challenge = get_challenge_by_alias(challenge_title)
+    print(challenge.description)
     if challenge is None:
         abort(404)
     
@@ -17,7 +18,8 @@ def get_challenges(challenge_title):
     
     form = FlagForm()
     if form.validate_on_submit() and not user_has_completed_challenge:
-        success, message = submit_flag(current_user, challenge, form.flag.data)
+        flag = form.flag.data.replace(' ', '_')
+        success, message = submit_flag(current_user, challenge, flag)
         print(success, message)
         flash(message)
         if success:

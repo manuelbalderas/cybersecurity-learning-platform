@@ -5,7 +5,7 @@
 <!-- NOTIFICATION CONTAINER (DAISYUI STYLES + YOUR LOGIC) -->
 <div id="notification-container" class="fixed bottom-4 right-4 space-y-2 z-50">
     {% for message in get_flashed_messages() %}
-        {% if 'correct' in message.lower() %}
+        {% if 'correcto' in message.lower() %}
             <div role="alert" class="alert alert-success animate-fade-out">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -61,13 +61,19 @@
     <div class="mb-3 text-base-content/80" style="white-space: pre-line;">
         {{ challenge.description }}
     </div>
+    <details class="collapse collapse-arrow mt-3 border border-base-300 bg-base-200">
+        <summary class="collapse-title text-base font-medium">Formato</summary>
+        <div class="collapse-content">
+            <p class="text-sm">{{ challenge.format }}</p>
+        </div>
+    </details>
     {% if challenge.attachment %}
-        <a href="{{ challenge.attachment }}" class="link link-primary mb-3 block">Download Attachment</a>
+        <a href="{{ challenge.attachment }}" class="link link-primary mb-3 block">Archivos</a>
     {% endif %}
 
     {% if challenge.resources %}
         <details class="collapse collapse-arrow mt-3 border border-base-300 bg-base-200">
-            <summary class="collapse-title text-base font-medium">Resources</summary>
+            <summary class="collapse-title text-base font-medium">Recursos</summary>
             <div class="collapse-content">
                 <ul class="menu menu-compact">
                     {% set resources = challenge.resources.split(',') %}

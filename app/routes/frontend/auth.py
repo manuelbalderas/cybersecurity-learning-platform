@@ -39,6 +39,6 @@ def register():
         )
         flash(message)
         if sucess:
-            return redirect(url_for('auth_frontend_bp.login'))
+            return redirect(url_for('auth_frontend.login'))
         
     return render_template('auth/register.html', form=form, page_title="Registro")

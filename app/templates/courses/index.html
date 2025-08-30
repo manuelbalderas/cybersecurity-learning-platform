@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4">
+<div class="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 p-4">
   {% for course in courses %}
-  <div class="card w-96 shadow-sm p-5 relative">
+  <div class="card w-96 shadow-sm lg:p-5 relative">
   <figure>
     <img class="rounded-lg object-cover"
       src="{{ url_for('static', filename='images/' ~ course.image_url) }}"
       alt="Shoes" />
   </figure>
-  <div class="card-body bg-base-200 rounded-lg">
-    <h2 class="card-title font-RobotoMono text-accent md:text-3xl">{{ course.title.upper() }}</h2>
-    <p>{{ course.description[:120] + '...' }}</p>
+  <div class="card-body bg-base-200 rounded-lg h-[400px]">
+    <h2 class="card-title font-RobotoMono text-accent md:text-3xl mb-5">{{ course.title.upper() }}</h2>
+    <p class="line-clamp-4">{{ course.description }}</p>
     {% if current_user.is_authenticated %}
     <progress class="progress mt-2" value="{{total_percentage[course]}}" max="100"></progress>
     {% endif %}

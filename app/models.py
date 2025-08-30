@@ -44,7 +44,7 @@ class User(UserMixin, db.Model):
     @property
     def streak_is_broken(self):
         return self.last_streak_date is not None and self.last_streak_date < date.today() - timedelta(days=1)
-        
+    
     @property
     def has_done_streak_today(self):
         return self.last_streak_date == date.today()
@@ -94,6 +94,7 @@ class Challenge(db.Model):
     files = db.Column(db.String(255))
     resources = db.Column(db.String(255))
     points = db.Column(db.Integer, default=0)
+    format = db.Column(db.String(100))
     flag = db.Column(db.String(30), nullable=False)
 
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
@@ -105,8 +106,8 @@ class Challenge(db.Model):
 class UserChallenge(db.Model):
     __tablename__ = 'user_challenge'
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate='CASCADE'), primary_key=True)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id', onupdate='CASCADE'), primary_key=True)
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', back_populates='completed_challenges')

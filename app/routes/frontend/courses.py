@@ -11,7 +11,6 @@ def index():
         started_courses = get_started_courses()
         finished_courses = get_finished_courses()
         total_percentage = {course: get_calculate_percentage(course) for course in courses}
-        print(finished_courses)
         return render_template(
             'courses/index.html',
             courses=courses, 
@@ -27,5 +26,7 @@ def get_courses(course_title):
     course = get_course_by_alias(course_title)
     if course is None:
         abort(404)
+        
+    print(course.description)
     
     return render_template('courses/course_detail.html', course=course, page_title=f"{course.title}")

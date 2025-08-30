@@ -22,4 +22,5 @@ def process_register(username, email, password):
     user = User(username=username, email=email, password=hashed_password)
     db.session.add(user)
     db.session.commit()
+    login_user(user)
     return True, "Usuario creado con éxito"
