@@ -1,0 +1,9 @@
+title: OWASP Top 10 
+id: 6
+description: | 
+  El OWASP Top Ten es mucho más que una lista de errores comunes en aplicaciones; es una herramienta clave para entender los riesgos de seguridad que enfrentan las aplicaciones web hoy en día. Este conjunto reúne las vulnerabilidades más críticas identificadas por expertos en ciberseguridad de todo el mundo, y su estudio ayuda a fortalecer el desarrollo de software seguro desde sus bases. Conocer y aprender a manejar estas vulnerabilidades es fundamental para proteger tanto a los usuarios como a la información frente a posibles ataques maliciosos.
+
+  A nivel global, el OWASP Top Ten es reconocido como un punto de partida esencial para desarrolladores, estudiantes y profesionales que quieren adentrarse en el mundo de la ciberseguridad y el desarrollo seguro. Este marco evoluciona constantemente, adaptándose a nuevas amenazas y tecnologías, y promueve buenas prácticas que se aplican en empresas, instituciones educativas y proyectos personales. Entender estas diez principales amenazas permite identificar riesgos, implementar controles efectivos y reducir la probabilidad de brechas de seguridad.
+
+  Este curso busca que los estudiantes comprendan, paso a paso, cada una de estas vulnerabilidades, su impacto real y las formas prácticas de evitarlas o mitigarlas durante el ciclo de desarrollo de software. Aprender el OWASP Top Ten es el primer gran paso para formar profesionales capacitados en crear aplicaciones más seguras, protegidas y confiables para el presente y el futuro digital.
+image_url: Vulnerabilities.png

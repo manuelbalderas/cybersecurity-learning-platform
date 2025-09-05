@@ -1,0 +1,11 @@
+title: ¡Carcel! ¡carcel! ¡carcel!
+category: CPF
+description: |
+  El Código Penal Federal de México sanciona el acceso no autorizado, destrucción o alteración de sistemas o datos de terceros.
+  
+  ¿Cuál es el número de artículo que tipifica estos delitos informáticos?
+resources:
+  - https://www.diputados.gob.mx/LeyesBiblio/pdf/CPF.pdf
+points: 50
+format: articulo
+flag: 211BIS1

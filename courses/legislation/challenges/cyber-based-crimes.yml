@@ -1,0 +1,14 @@
+title: ¿Delitos info... qué? 
+category: CFAA
+description: |
+  La primera ley en el mundo que tipificó formalmente los delitos informáticos, sentando un precedente legal para combatir fraudes electrónicos, accesos no autorizados y sabotajes digitales, fue promulgada en Estados Unidos como parte de una enmienda al código penal federal.
+
+  Esta legislación, que ha servido como base para muchas normas internacionales, se conoce como el Computer Fraud and Abuse Act (CFAA).
+  
+  ¿En qué año se aprobó esta importante ley?
+files: community.svg
+resources:
+  - https://www.justice.gov/jm/jm-9-48000-computer-fraud
+points: 50
+format: YYYY
+flag: 1986

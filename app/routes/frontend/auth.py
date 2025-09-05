@@ -14,7 +14,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         success, message = process_login(form.email.data, form.password.data)
-        flash(message)
+        flash(message, category='success' if success else 'error')
         if success:
             return redirect(url_for('main_frontend.index'))
     return render_template('auth/login.html', form=form, page_title="Iniciar Sesión")
@@ -37,7 +37,7 @@ def register():
             form.email.data,
             form.password.data
         )
-        flash(message)
+        flash(message, category='success' if success else 'error')
         if sucess:
             return redirect(url_for('auth_frontend.login'))
         

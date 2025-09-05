@@ -1,6 +1,6 @@
-course_title: Sistemas Operativos
-course_alias: operating_systems
-course_description: | 
+title: Sistemas Operativos
+id: 2
+description: | 
   Los sistemas operativos son el software base que permite la interacción entre el hardware de un dispositivo y las aplicaciones que se ejecutan en él.
   Aunque muchas veces se utilizan como una caja negra, comprender su funcionamiento interno es crucial para quienes desarrollan software, administran infraestructura o investigan seguridad informática.
 

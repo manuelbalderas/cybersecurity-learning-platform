@@ -1,7 +1,7 @@
-challenge_title: ¿Quién decide primero?
-challenge_alias: scheduling
-challenge_category:  nmap
-challenge_description: |
+title: ¿Quién decide primero?
+alias: scheduling
+category:  nmap
+description: |
   En sistemas UNIX modernos, el planificador utiliza múltiples colas para asignar prioridades a los procesos.
   Un algoritmo comúnmente usado es el Round Robin, donde cada proceso recibe una porción de CPU llamada "quantum".
   Si un proceso no finaliza durante su quantum, se mueve al final de la cola.
@@ -9,9 +9,9 @@ challenge_description: |
 
   En Linux, el Completely Fair Scheduler (CFS) se basa en una estructura de árbol rojo-negro donde se asigna tiempo proporcional a cada proceso según su "vruntime".
   El proceso con menor "vruntime" es el siguiente en ser ejecutado, asegurando equidad a lo largo del tiempo.
-challenge_files: community.svg
-# challenge_resources:
+files: community.svg
+# resources:
 #   - https://google.com
 #   - https://github.com
-challenge_points: 100
-challenge_flag: nca{vruntime_mas_bajo}
+points: 100
+flag: vruntime_mas_bajo
