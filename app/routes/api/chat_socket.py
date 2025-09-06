@@ -16,6 +16,7 @@ def handle_disconnect():
 
 @socket.on('message')
 def handle_message(message):
+    print(f"[Socket] Received message: {message}")
     user_id = str(current_user.id) if current_user.is_authenticated else None
 
     if not current_user.has_done_streak_today and is_message_educational(message):

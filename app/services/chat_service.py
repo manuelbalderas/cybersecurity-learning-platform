@@ -8,6 +8,9 @@ from langchain_core.messages import BaseMessage
 from langchain_ollama.llms import OllamaLLM
 from .chat_history import ChatMessageHistory
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 # Load models
 tfidf_vectorizer = joblib.load("models/tfidf_vectorizer.joblib")
 knn_model = joblib.load("models/knn_model.joblib")
@@ -49,7 +52,7 @@ prompt = ChatPromptTemplate.from_messages([
     MessagesPlaceholder(variable_name="history"),
     ("human", "{input}")
 ])
-llm = OllamaLLM(model='mistral')
+llm = OllamaLLM(model='mistral', base_url='http://localhost:11434')
 chain = prompt | llm
 
 # Wrap with history

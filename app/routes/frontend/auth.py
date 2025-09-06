@@ -32,13 +32,13 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        sucess, message = process_register(
+        success, message = process_register(
             form.username.data,
             form.email.data,
             form.password.data
         )
         flash(message, category='success' if success else 'error')
-        if sucess:
+        if success:
             return redirect(url_for('auth_frontend.login'))
         
     return render_template('auth/register.html', form=form, page_title="Registro")

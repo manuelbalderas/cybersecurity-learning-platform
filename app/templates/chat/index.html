@@ -70,7 +70,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
 <script>
     // Connect to WebSocket server
-    var socket = io("http://localhost:5000");
+    var socket = io("http://localhost:5000", {
+  transports: ["websocket"]
+});
 
     let loaderElement = null;
 
@@ -95,6 +97,7 @@
     chatBox.scrollTop = chatBox.scrollHeight;
 
     loaderElement = loader;
+
 }
 
 function removeLoader() {
@@ -122,8 +125,9 @@ function removeLoader() {
 
         showLoader(); // Show loader
 
-        
-        socket.send(userMessage); // Send message to the WebSocket server
+        //socket.send(userMessage);
+        console.log("Sending message:", userMessage);
+        socket.emit('message', userMessage); // Send message to the WebSocket server
         input.value = ""; // Clear input field
     }
 
@@ -154,7 +158,9 @@ function removeLoader() {
       appendMessage(text, "user");
         showLoader(); // Show loader
 
-      socket.send(text);
+      //socket.send(text);
+      console.log("Sending message:", text);
+      socket.emit('message', text);
     }
     
 
