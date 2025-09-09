@@ -3,6 +3,7 @@ from flask_socketio import emit
 from flask import request, flash
 from app import socket, db
 from app.services.chat_service import process_chat_message, is_message_educational
+from app.models import User
 
 print("Chat socket initialized!")
 
@@ -17,11 +18,9 @@ def handle_disconnect():
 @socket.on('message')
 def handle_message(data):
     message = data.get('message')
-    print(message)
     user_id = data.get('user_id')
 
     print(f"[Socket] Received message: {message}")
-    user_id = str(current_user.id) if current_user.is_authenticated else None
 
     user = User.query.get(user_id) if user_id else None
 
@@ -29,8 +28,7 @@ def handle_message(data):
         user.update_streak()
         db.session.commit()
         flash("¡Has completado tu racha diaria! 🎉", "success")
-        # emit('streak_update', {'has_done_streak_today': current_user.has_done_streak_today}, room=request.sid)
-        # print(f"User {current_user.username} has done their streak today! Streak: {current_user.has_done_streak_today}")
+        emit('streak_update', {'user_id': user_id, 'new_streak': user.current_streak})
 
     response = process_chat_message(user_id, message)
     emit("response", response, broadcast=True)#, namespace='/chat')
