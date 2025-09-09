@@ -73,6 +73,7 @@
     var socket = io("http://localhost:5000", {
   transports: ["websocket"]
 });
+    const userId = "{{ current_user.id if current_user.is_authenticated else '' }}";
 
     let loaderElement = null;
 
@@ -127,7 +128,10 @@ function removeLoader() {
 
         //socket.send(userMessage);
         console.log("Sending message:", userMessage);
-        socket.emit('message', userMessage); // Send message to the WebSocket server
+        socket.emit('message', {
+          'message': userMessage,
+          'user_id': userId,
+        }); // Send message to the WebSocket server
         input.value = ""; // Clear input field
     }
 
@@ -160,7 +164,10 @@ function removeLoader() {
 
       //socket.send(text);
       console.log("Sending message:", text);
-      socket.emit('message', text);
+      socket.emit('message', {
+        'message': text,
+        'user_id': userId,
+      });
     }
     
 
