@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 import os
 import json
 
-input_file = './datasets/rag_dataset.jsonl'
+input_file = './datasets/nist_scraped_glossary.jsonl'
 embeddings = OllamaEmbeddings(model="mxbai-embed-large")
 
 
@@ -27,7 +27,7 @@ if add_documents:
                 record = json.loads(line)
                 document = Document(
                     page_content = record['term'] + ' is ' + record['definition'],
-                    metadata = {'term': record['term'], "cluster": record['cluster']},
+                    metadata = {'term': record['term'], "link": record['link']},
                     id = str(i)
                 )
             ids.append(str(i))
