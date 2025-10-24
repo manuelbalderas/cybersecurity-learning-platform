@@ -1,4 +1,5 @@
 from app import db
+from flask import flash
 from app.models import Challenge, UserChallenge 
 
 def get_challenge_by_alias(alias):
@@ -11,9 +12,15 @@ def get_user_challenge(user_id, challenge_id):
     ).first()
     
 def submit_flag(user, challenge, flag):
-    print(flag)
-    print(challenge.flag)
-    if flag.lower() == challenge.flag.lower():
+    # Verificar si el flag no es None
+    if flag is None:
+        flash('Flag no puede estar vacía', 'error')
+        return False
+    
+    print(f"Flag enviada: {flag}")
+    print(f"Flag correcta: {challenge.flag}")
+    
+    if flag.strip().lower() == challenge.flag.strip().lower():
         user_challenge = UserChallenge(
             user_id=user.id,
             challenge_id=challenge.id,
@@ -22,6 +29,8 @@ def submit_flag(user, challenge, flag):
         if not user.has_done_streak_today:
             user.update_streak()
         db.session.commit()
-        return True, "Correcto! Esa es la bandera"
+        flash('¡Reto completado correctamente!', 'success')
+        return True
     else:
-        return False, "Error! Intenta nuevamente"
+        flash('Flag incorrecta', 'error')
+        return False

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash
+from flask import Blueprint, render_template, abort, flash, redirect, url_for
 from flask_login import current_user, login_required
 from app.forms import FlagForm
 from app.services.challenge_service import get_challenge_by_alias, get_user_challenge, submit_flag
@@ -19,12 +19,12 @@ def get_challenges(challenge_title):
     form = FlagForm()
     if form.validate_on_submit() and not user_has_completed_challenge:
         flag = form.flag.data.replace(' ', '_')
-        success, message = submit_flag(current_user, challenge, flag)
-        print(success, message)
-        flash(message)
+        success = submit_flag(current_user, challenge, flag)
+        print(f"Success: {success}")
+        
+        # Si fue exitoso, recargar los datos del usuario
         if success:
-            user_has_completed_challenge = True
-            user_challenge = get_user_challenge(current_user.id, challenge.id)
+            return redirect(url_for('challenges_frontend.get_challenges', challenge_title=challenge_title))
     
     return render_template(
         "challenges/challenge_detail.html",

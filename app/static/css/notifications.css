@@ -1,0 +1,103 @@
+/* Estilos para notificaciones*/
+.notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10001;
+    max-width: 400px;
+}
+
+.notification {
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification.hide {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+/* Estilos para las alertas de DaisyUI */
+.alert {
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background-color: #10b981;
+    color: white;
+    border-left-color: #059669;
+}
+
+.alert-error {
+    background-color: #ef4444;
+    color: white;
+    border-left-color: #dc2626;
+}
+
+.alert-warning {
+    background-color: #f59e0b;
+    color: white;
+    border-left-color: #d97706;
+}
+
+.alert-info {
+    background-color: #3b82f6;
+    color: white;
+    border-left-color: #2563eb;
+}
+
+/* Efecto de slide-up desde abajo */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
+
+/* ELIMINAR COMPLETAMENTE LOS ALERTS VIEJOS DE DAISYUI */
+div[role="alert"]:not(#notificationContainer [role="alert"]) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+/* Prevenir que aparezcan nuevos alerts */
+.alert:not(#notificationContainer .alert) {
+    display: none !important;
+}
+
+/* Estilos específicos para NUESTRAS notificaciones */
+#notificationContainer .alert {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    left: auto !important;
+}

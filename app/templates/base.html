@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}DailyPwn &ndash; {{ page_title }} {% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
 </head>
 <body class="font-Roboto h-full">
+    <!-- Sistema de Notificaciones -->
+    <div class="notification-container" id="notificationContainer">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} shadow-lg mb-2 notification" id="notification-{{ loop.index }}">
+                <div class="flex items-center justify-between">
+                    <span>{{ message }}</span>
+                    <button class="btn btn-xs btn-circle btn-ghost" onclick="closeNotification('notification-{{ loop.index }}')">✕</button>
+                </div>
+            </div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+    
     <!-- This is the header for the cellphone -->
     <div class="navbar shadow-sm z-10000 flex items-center justify-between lg:hidden">
         <div class="flex items-center space-x-3 navbar-start">
@@ -70,7 +84,6 @@
       
           <!-- Site Name -->
           <a href="/" class="text-4xl font-bold font-RobotoMono text-accent space-x-3">
-        <!-- <div class="flex items-center space-x-3 navbar-start"> -->
             {{ "DailyPwn".upper() }}
           </a>
         </div>
@@ -145,20 +158,6 @@
                 <a href="{{ link.href }}" class="link link-hover hover:text-accent">{{ link.text }}</a>
             {% endfor %}
         </nav>
-        <!-- <nav>
-            <h6 class="footer-title">Retos</h6>
-            {% for link in [
-            ] %}
-                <a href="{{ link.href }}" class="link link-hover">{{ link.text[0].upper() + link.text[1:].lower() }}</a>
-            {% endfor %}
-        </nav>
-        <nav>
-            <h6 class="footer-title">Legal</h6>
-            {% for link in [
-            ] %}
-            <a href="{{ link.href }}" class="link link-hover">{{ link.text }}</a>
-            {% endfor %}
-        </nav> -->
         </footer>
         <footer class="footer text-base-content border-base-300 border-t px-10 py-4 text-base py-6">
         <aside class="grid-flow-col items-center">
@@ -170,44 +169,68 @@
             </div>
         </nav>
     </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Sistema de Notificaciones
+        function initNotifications() {
+            document.querySelectorAll('#notificationContainer .notification').forEach((notification, index) => {
+                setTimeout(() => notification.classList.add('show'), 100 * index);
+                setTimeout(() => closeNotification(notification.id), 5000);
+            });
+        }
+        
+        function closeNotification(id) {
+            const notification = document.getElementById(id);
+            if (notification) {
+                notification.classList.add('hide');
+                setTimeout(() => notification.remove(), 300);
+            }
+        }
+        
+        function showNotification(message, category = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notificationId = 'notification-' + Date.now();
+            
+            const notification = document.createElement('div');
+            notification.id = notificationId;
+            notification.className = `alert alert-${category} shadow-lg mb-2 notification`;
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button class="btn btn-xs btn-circle btn-ghost" onclick="closeNotification('${notificationId}')">✕</button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => closeNotification(notificationId), 5000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', initNotifications);
+
+        // WebSocket para streaks
+        var socket = io("http://localhost:5000"); 
+        socket.on('streak_update', function(data) {
+            {% if current_user.is_authenticated %}
+            var currentUserId = {{ current_user.id }};
+            if (String(data.user_id).trim() === String(currentUserId).trim()) {
+                const updateStreak = (element, count) => {
+                    if (element) {
+                        element.querySelector('span').textContent = count;
+                        element.classList.toggle('text-accent', count > 0);
+                    }
+                };
+                
+                updateStreak(document.getElementById('streak-status-mobile'), data.new_streak);
+                updateStreak(document.getElementById('streak-status-desktop'), data.new_streak);
+                
+                if (data.new_streak > 0) {
+                    showNotification(`🔥 Streak: ${data.new_streak} días`, 'success');
+                }
+            }
+            {% endif %}
+        });
+    </script>
 </body>
 </html>
-
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    var socket = io("http://localhost:5000"); 
-
-    socket.on('streak_update', function(data) {
-        {% if current_user.is_authenticated %}
-        var currentUserId = {{ current_user.id }};
-        console.log('data.user_id:', '[' + data.user_id + ']', 'type:', typeof data.user_id);
-        console.log('currentUserId:', '[' + currentUserId + ']', 'type:', typeof currentUserId);   
-        {% endif %}
-
-        
-        if (String(data.user_id).trim() === String(currentUserId).trim()) {
-        console.log("XD")
-        
-        const streakMobile = document.getElementById('streak-status-mobile');
-        const streakDesktop = document.getElementById('streak-status-desktop');
-
-        function updateStreakUI(streakCount) {
-        if (streakMobile) {
-            streakMobile.querySelector('span').textContent = streakCount;
-            if (streakCount > 0) streakMobile.classList.add('text-accent');
-            else streakMobile.classList.remove('text-accent');
-        }
-        if (streakDesktop) {
-            streakDesktop.querySelector('span').textContent = streakCount;
-            if (streakCount > 0) streakDesktop.classList.add('text-accent');
-            else streakDesktop.classList.remove('text-accent');
-        }
-        }
-
-        // Then in your WebSocket handler:
-        if (String(data.user_id).trim() === String(currentUserId).trim()) {
-        updateStreakUI(data.new_streak);
-        }
-        
-}});
-</script>
